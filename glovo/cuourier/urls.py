@@ -5,6 +5,7 @@ from rest_framework import routers
 
 router = routers.SimpleRouter()
 router.register(r'user', UserProfileViewSet, basename='users')
+router.register(r'category', CategoryViewSet, basename='category')
 router.register(r'combos', ProductComboViewSet, basename='combos')
 router.register(r'cart', CartViewSet, basename='cart_list')
 router.register(r'cart_item', CartItemViewSet, basename='cart_items')
@@ -30,4 +31,3 @@ urlpatterns = [
     path('add_product_combo/<int:pk>', ProductComboDetailUpdateDeleteAPIView.as_view(), name='product_combo_edit')
 
 ]
-

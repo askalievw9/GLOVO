@@ -1,8 +1,7 @@
 from .serializers import *
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from .permissions import CheckStatus, CheckOwner, CheckProduct
 from .filters import *
-from .pagination import PostPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
@@ -11,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class RegisterView(generics.CreateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserProfileSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -21,7 +20,7 @@ class RegisterView(generics.CreateAPIView):
 
 
 class CustomLoginView(TokenObtainPairView):
-    serializer_class = LoginSerializer
+    serializer_class = LoginsSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -49,8 +48,11 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
-class CategoryListAPIView(generics.ListAPIView):
+
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -69,7 +71,6 @@ class StoreDetailAPIView(generics.RetrieveAPIView):
 
 
 class StoreCreateAPIView(generics.CreateAPIView):
-    queryset = Store.objects.all()
     serializer_class = StoreSerializer
     permission_classes = [CheckStatus]
 
@@ -92,11 +93,9 @@ class ProductListAPIView(generics.ListAPIView):
     filterset_class = ProductFilter
     search_fields = ['product_name']
     ordering_fields = ['price']
-    pagination_class = PostPagination
 
 
 class ProductCreateAPIView(generics.CreateAPIView):
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [CheckProduct]
 
@@ -116,7 +115,6 @@ class ProductComboViewSet(viewsets.ModelViewSet):
 
 
 class ProductComboCreateAPIView(generics.CreateAPIView):
-    queryset = ProductCombo.objects.all()
     serializer_class = ProductCreateComboSerializer
     permission_classes = [CheckStatus]
 
@@ -131,10 +129,16 @@ class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
+    def get_queryset(self):
+        return Cart.objects.filter(id=self.request.user.id)
+
 
 class CartItemViewSet(viewsets.ModelViewSet):
     queryset = CartItem.objects.all()
     serializer_class = CartItemSerializer
+
+    def get_queryset(self):
+        return CartItem.objects.filter(id=self.request.user.id)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -155,4 +159,3 @@ class StoreReviewViewSet(viewsets.ModelViewSet):
 class CourierReviewViewSet(viewsets.ModelViewSet):
     queryset = CourierReview.objects.all()
     serializer_class = CourierReviewSerializer
-

@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class LoginSerializer(serializers.Serializer):
+class LoginsSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
@@ -41,7 +41,7 @@ class LoginSerializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        fields = ['username']
 
 
 class UserProfileSimpleSerializer(serializers.ModelSerializer):
@@ -104,25 +104,25 @@ class ProductCreateComboSerializer(serializers.ModelSerializer):
 class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
-        fields = '__all__'
+        fields = ['user']
 
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
-        fields = '__all__'
+        fields = ['product', 'cart', 'quantity']
 
 
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['client', 'cart', 'status', 'delivery_address', 'courier', 'created_date']
 
 
 class CourierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courier
-        fields = '__all__'
+        fields = ['user', 'current_orders', 'status']
 
 
 class StoreReviewSerializer(serializers.ModelSerializer):
@@ -137,7 +137,7 @@ class StoreReviewSerializer(serializers.ModelSerializer):
 class CourierReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourierReview
-        fields = '__all__'
+        fields = ['client', 'courier', 'rating', 'created_date']
 
 
 class StoreListSerializer(serializers.ModelSerializer):
@@ -148,9 +148,9 @@ class StoreListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Store
-        fields = ['id', 'store_name', 'store_image', 'category', 'avg_rating', 'total_people', 'check_good']
+        fields = ['id', 'store_name', 'store_image','category','avg_rating', 'total_people', 'check_good']
 
-    def get_avg_rating(self, obj):
+    def get_avg_ratings(self, obj):
         return obj.get_avg_rating()
 
     def get_total_people(self, obj):
