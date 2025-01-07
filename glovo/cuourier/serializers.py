@@ -142,13 +142,13 @@ class CourierReviewSerializer(serializers.ModelSerializer):
 
 class StoreListSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    avg_rating = serializers.SerializerMethodField()
+    avg_ratings = serializers.SerializerMethodField()
     total_people = serializers.SerializerMethodField()
     check_good = serializers.SerializerMethodField()
 
     class Meta:
         model = Store
-        fields = ['id', 'store_name', 'store_image','category','avg_rating', 'total_people', 'check_good']
+        fields = ['id', 'store_name', 'store_image','category','avg_ratings', 'total_people', 'check_good']
 
     def get_avg_ratings(self, obj):
         return obj.get_avg_rating()
